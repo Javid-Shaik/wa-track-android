@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:gravity="center" android:orientation="vertical" android:padding="24dp">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="100dp" android:layout_height="100dp"
+        android:src="@drawable/ic_app_logo" android:alpha="0"
+        android:contentDescription="Logo" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Verify OTP" android:textSize="24sp"
+        android:textStyle="bold" android:alpha="0" android:layout_marginTop="12dp"/>
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Enter the code sent to your phone" android:textSize="14sp"
+        android:alpha="0" android:layout_marginBottom="24dp"/>
+
+    <EditText
+        android:id="@+id/etOtp"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="6-digit OTP" android:inputType="number"
+        android:maxLength="6" />
+
+    <Button
+        android:id="@+id/btnVerifyOtp"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Verify" android:layout_marginTop="20dp" />
+</LinearLayout>

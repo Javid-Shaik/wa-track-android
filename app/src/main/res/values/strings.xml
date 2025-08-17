@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">WaTrack</string>
+    <string name="default_web_client_id">732931312093-v8889sehop7t73jmvih2u8jrn85790mg.apps.googleusercontent.com</string>
+    <string name="google_logo">Google Logo</string>
+    <string name="scan_qr">Scan the QR with WhatsApp</string>
+</resources>

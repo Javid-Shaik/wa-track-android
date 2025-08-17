@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#6200EE</color> <!-- Purple Color -->
+    <color name="colorPrimaryDark">#3700B3</color> <!-- Dark Purple -->
+    <color name="colorAccent">#03DAC5</color>
+    <color name="primary">#6750A4</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="bgDark">#111217</color>
+    <color name="textOnDark">#FFFFFF</color>
+    <color name="textMuted">#B9C0D4</color>
+    <color name="textLink">#4F66E6</color>
+    <color name="ic_launcher_background">#145E6D</color>
+    <color name="textHint">#77FFFFFF</color>
+    <color name="gray">#888888</color>
+    <color name="logoColor">#2196F3</color>
+    <color name="lightBlue">#3BA8E0</color>
+</resources>

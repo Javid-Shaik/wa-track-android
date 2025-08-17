@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_qr_gradient">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Top Brand Area -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="32dp"
+            android:paddingBottom="16dp">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_app_logo"
+                android:contentDescription="@string/app_name"
+                android:alpha="0.95"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:textColor="@color/textOnDark"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Requesting QR…"
+                android:textColor="@color/textMuted"
+                android:layout_marginTop="6dp"/>
+        </LinearLayout>
+
+        <!-- Card -->
+        <LinearLayout
+            android:id="@+id/qrCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card"
+            android:padding="18dp"
+            android:elevation="3dp"
+            android:clipToPadding="false"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/qrImage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:minHeight="240dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_placeholder_qr"
+                android:contentDescription="@string/scan_qr" />
+
+            <TextView
+                android:id="@+id/expireText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Expires in 00:00"
+                android:textColor="@color/textOnDark"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Open WhatsApp → ⋮ (or Settings) → Linked devices → Link a device → Scan this QR."
+                android:textColor="@color/textOnDark"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+
+        <!-- Loader -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loader"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="28dp"
+            app:lottie_rawRes="@raw/loader_pulse"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:visibility="gone"/>
+
+        <!-- Actions -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="18dp">
+
+            <Button
+                android:id="@+id/btnRefresh"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:text="Refresh QR"
+                android:background="@drawable/bg_button_primary"
+                android:textColor="@color/onPrimary"/>
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:text="Cancel"
+                android:textColor="@color/textOnDark"
+                android:background="@drawable/bg_button_outline"/>
+        </LinearLayout>
+
+        <!-- Legal Links -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="18dp">
+
+            <TextView
+                android:id="@+id/tvTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Terms"
+                android:textStyle="bold"
+                android:textColor="@color/textLink"
+                android:paddingEnd="16dp"/>
+
+            <TextView
+                android:id="@+id/tvPrivacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Privacy"
+                android:textStyle="bold"
+                android:textColor="@color/textLink"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="18dp" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

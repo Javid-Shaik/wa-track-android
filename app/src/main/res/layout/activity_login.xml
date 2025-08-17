@@ -1,0 +1,195 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:background="@drawable/bg_login_gradient">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp"
+        android:background="@android:color/transparent">
+
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:src="@drawable/ic_app_logo"
+            android:layout_marginBottom="12dp"
+            android:alpha="0" />
+
+        <!-- App Title -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WaTrack"
+            android:textColor="@color/textOnDark"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:alpha="0" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Track. Notify. Stay Updated."
+            android:textColor="@color/textMuted"
+            android:layout_marginBottom="32dp"
+            android:alpha="0" />
+
+        <!-- EMAIL LOGIN CARD -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_input"
+            android:padding="18dp">
+
+            <!-- Email Input -->
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="12dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:minHeight="48dp"
+                android:padding="12dp"
+                android:textColor="@color/textOnDark"
+                android:textColorHint="#77FFFFFF" />
+
+            <!-- Password Input with Eye Toggle -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_lock"
+                    android:drawablePadding="12dp"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:minHeight="48dp"
+                    android:padding="12dp"
+                    android:textColor="@color/textOnDark"
+                    android:textColorHint="#77FFFFFF" />
+
+                <ImageView
+                    android:id="@+id/ivTogglePassword"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_eye_off"
+                    android:contentDescription="Toggle password visibility"
+                    app:tint="@color/textOnDark" />
+            </RelativeLayout>
+
+            <!-- Email Login Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEmailLogin"
+                android:layout_width="240dp"
+                android:layout_height="48dp"
+                android:text="Login with Email"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:layout_marginTop="12dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:cornerRadius="20dp"
+                android:backgroundTint="@color/lightBlue"
+                app:rippleColor="#22FFFFFF"
+                android:textColor="@color/onPrimary" />
+
+        </LinearLayout>
+
+        <!-- Divider -->
+        <TextView
+            android:id="@+id/tvOr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OR"
+            android:textColor="@color/textMuted"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Google Sign-In (PUBG style MaterialButton) -->
+        <LinearLayout
+            android:id="@+id/btnGoogleSignIn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_google_button"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="20dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_google_logo"
+                android:contentDescription="Google logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign in with Google"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+
+        <!-- Forgot Password -->
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Forgot your password?"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary" />
+
+        <!-- Sign Up -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="14dp">
+
+            <TextView
+                android:id="@+id/tvSignUpPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account? "
+                android:textColor="@color/textOnDark"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:id="@+id/tvSignUpLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign up"
+                android:textColor="@color/primary"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

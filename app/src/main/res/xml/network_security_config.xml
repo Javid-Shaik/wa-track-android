@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Base configuration with system and user certificates -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" /> <!-- Important for debug builds -->
+        </trust-anchors>
+    </base-config>
+
+    <!-- Debug-only configuration for emulator/localhost -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+
+    <!-- Domain-specific configurations -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.2.1</domain> <!-- Android emulator special IP -->
+        <domain includeSubdomains="true">10.26.124.172</domain>
+        <domain includeSubdomains="true">192.168.56.4</domain>
+    </domain-config>
+</network-security-config>
