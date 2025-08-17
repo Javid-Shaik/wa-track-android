@@ -3,20 +3,24 @@ package com.example.watrack.viewmodel;
 import android.app.Application;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.watrack.model.LinkStatusResponse;
 import com.example.watrack.model.QrResponse;
 import com.example.watrack.model.SessionResponse;
 import com.example.watrack.repository.ApiClient;
 import com.example.watrack.repository.ApiService;
 import com.example.watrack.util.SessionPrefs;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -62,13 +66,19 @@ public class QrLinkViewModel extends AndroidViewModel {
     }
 
     private void createSession() {
-        api.createSession(Collections.emptyMap()).enqueue(new Callback<SessionResponse>() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            uiStatus.setValue("User not authenticated");
+            return;
+        }
+
+        api.createSession(Collections.singletonMap("firebaseUid", user.getUid())).enqueue(new Callback<SessionResponse>() {
             @Override
             public void onResponse(Call<SessionResponse> call, Response<SessionResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     sessionId = response.body().getSessionId();
                     SessionPrefs.saveSessionId(getApplication(), sessionId);
-                    startClient(); // after creating session, start client
+                    startClient();
                 } else {
                     loading.setValue(false);
                     uiStatus.setValue("Failed to create session");
@@ -135,11 +145,12 @@ public class QrLinkViewModel extends AndroidViewModel {
 
     private void pollStatus() {
         new Handler().postDelayed(() -> {
-            api.getStatus(sessionId).enqueue(new Callback<LinkStatusResponse>() {
+            api.getUserSession(sessionId).enqueue(new Callback<SessionResponse>() {
                 @Override
-                public void onResponse(Call<LinkStatusResponse> call, Response<LinkStatusResponse> response) {
+                public void onResponse(Call<SessionResponse> call, Response<SessionResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        if ("connected".equalsIgnoreCase(response.body().getStatus())) {
+                        if ("linked".equalsIgnoreCase(response.body().getStatus())) {
+                            SessionPrefs.saveSessionId(getApplication(), sessionId);
                             onConnected();
                         } else {
                             pollStatus(); // keep polling until connected
@@ -148,7 +159,7 @@ public class QrLinkViewModel extends AndroidViewModel {
                 }
 
                 @Override
-                public void onFailure(Call<LinkStatusResponse> call, Throwable t) {
+                public void onFailure(Call<SessionResponse> call, Throwable t) {
                     // just retry later
                     pollStatus();
                 }

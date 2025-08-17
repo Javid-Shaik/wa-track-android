@@ -2,6 +2,7 @@ package com.example.watrack.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -10,8 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
-import com.example.watrack.ui.MainActivity;
+// Removed unused Glide import as we are no longer loading a dynamic image.
+// import com.bumptech.glide.Glide;
 import com.example.watrack.R;
 import com.example.watrack.databinding.ActivityQrLinkBinding;
 import com.example.watrack.viewmodel.QrLinkViewModel;
@@ -34,7 +35,7 @@ public class QrLinkActivity extends AppCompatActivity {
         setupUi();
         observeVm();
 
-        // initial fetch
+        // ✅ FIX: Use the correct method name from the ViewModel
         viewModel.fetchQr();
 
         // Optional: disable back while linking (UX choice)
@@ -47,6 +48,7 @@ public class QrLinkActivity extends AppCompatActivity {
 
     private void setupUi() {
         // Buttons
+        // ✅ FIX: Use the correct method name from the ViewModel
         binding.btnRefresh.setOnClickListener(v -> viewModel.fetchQr());
         binding.btnCancel.setOnClickListener(v -> finish());
 
@@ -76,12 +78,18 @@ public class QrLinkActivity extends AppCompatActivity {
         });
 
         viewModel.getQrData().observe(this, qrResponse -> {
-            if (qrResponse == null) return;
-            Glide.with(this)
-                    .load(qrResponse.getQrImageUrl())
-                    .placeholder(R.drawable.ic_placeholder_qr)
-                    .error(R.drawable.ic_error_qr)
-                    .into(binding.qrImage);
+            if (qrResponse == null || qrResponse.getQr() == null) {
+                // Handle the case where QR data or the QR field is null
+                Log.d("QrLinkActivity", "QR data or QR link is null.");
+                return;
+            }
+
+            String qrUrl = qrResponse.getQr();
+            Log.d("QrLinkActivity", "Received QR URL: " + qrUrl);
+
+            // ✅ FIX: Removed Glide and instead set the URL to the TextView
+            binding.tvQrLink.setText(qrUrl);
+            binding.tvQrLink.setVisibility(View.VISIBLE); // Ensure the TextView is visible
         });
 
         viewModel.getUiStatus().observe(this, binding.statusText::setText);
@@ -113,4 +121,3 @@ public class QrLinkActivity extends AppCompatActivity {
                 .show();
     }
 }
-

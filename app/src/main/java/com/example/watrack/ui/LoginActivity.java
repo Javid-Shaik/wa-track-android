@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.watrack.R;
 import com.example.watrack.databinding.ActivityLoginBinding;
 import com.example.watrack.util.LoaderDialog;
+import com.example.watrack.util.SessionPrefs;
 import com.example.watrack.viewmodel.AuthViewModel;
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.firebase.auth.AuthCredential;
@@ -34,16 +35,6 @@ import androidx.credentials.exceptions.GetCredentialException;
 
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
-/*
- * --- Old Google Sign-In imports (deprecated, kept for reference) ---
- * import com.google.android.gms.auth.api.signin.GoogleSignIn;
- * import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
- * import com.google.android.gms.auth.api.signin.GoogleSignInClient;
- * import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
- * import com.google.android.gms.common.api.ApiException;
- * import com.google.android.gms.tasks.Task;
- */
-
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
@@ -54,12 +45,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // Credential Manager
     private CredentialManager credentialManager;
-
-    /*
-     * --- Old Google Sign-In constants (deprecated, kept for reference) ---
-     * private GoogleSignInClient googleSignInClient;
-     * private static final int RC_GOOGLE_SIGN_IN = 9001;
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,21 +58,12 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize Credential Manager
         credentialManager = CredentialManager.create(this);
 
-        /*
-         * --- Old Google Sign-In initialization (deprecated, kept for reference) ---
-         * GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-         *         .requestIdToken(getString(R.string.default_web_client_id))
-         *         .requestEmail()
-         *         .build();
-         * googleSignInClient = GoogleSignIn.getClient(this, gso);
-         */
-
         loader = new LoaderDialog();
 
         animateIntro();
         setupPasswordToggle();
         setupEmailAuth();
-        setupGoogleAuth(); // ✅ New flow using Credential Manager
+        setupGoogleAuth();
         setupForgotPassword();
         setupSignUpPrompt();
     }
@@ -147,19 +123,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void beginGoogleSignIn() {
-        // 1. Build GetGoogleIdOption with server client ID
         GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
                 .setFilterByAuthorizedAccounts(false)
-                .setServerClientId(getString(R.string.default_web_client_id)) // ✅ must be Web client ID
+                .setServerClientId(getString(R.string.default_web_client_id))
                 .setAutoSelectEnabled(true)
                 .build();
 
-        // 2. Build GetCredentialRequest
         GetCredentialRequest request = new GetCredentialRequest.Builder()
                 .addCredentialOption(googleIdOption)
                 .build();
 
-        // 3. Call CredentialManager
         credentialManager.getCredentialAsync(
                 this,
                 request,
@@ -191,7 +164,6 @@ public class LoginActivity extends AppCompatActivity {
     private void handleGoogleSignInResult(GetCredentialResponse result) {
         Credential credential = result.getCredential();
         try {
-            // ✅ Correct way: parse credential data into GoogleIdTokenCredential
             GoogleIdTokenCredential googleIdTokenCredential =
                     GoogleIdTokenCredential.createFrom(credential.getData());
             String idToken = googleIdTokenCredential.getIdToken();
@@ -224,25 +196,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    /*
-     * --- Old Google Sign-In activity result handler (deprecated, kept for reference) ---
-     * @Override
-     * protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-     *     super.onActivityResult(requestCode, resultCode, data);
-     *
-     *     if (requestCode == RC_GOOGLE_SIGN_IN) {
-     *         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-     *         try {
-     *             GoogleSignInAccount account = task.getResult(ApiException.class);
-     *             firebaseAuthWithGoogle(account.getIdToken());
-     *         } catch (ApiException e) {
-     *             Log.w("GoogleSignIn", "Google sign in failed", e);
-     *             Toast.makeText(this, "Google sign-in failed", Toast.LENGTH_SHORT).show();
-     *         }
-     *     }
-     * }
-     */
-
     private void setupForgotPassword() {
         binding.tvForgotPassword.setOnClickListener(v -> {
             String email = binding.etEmail.getText().toString().trim();
@@ -274,8 +227,8 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.e("LoginActivity", "Response code: " + response.code());
                                 if (response != null && response.code() != 404) {
                                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(this, MainActivity.class));
-                                    finish();
+                                    // Navigate after successful backend registration
+                                    navigateAfterLogin();
                                 } else {
                                     Toast.makeText(this, "Backend registration failed", Toast.LENGTH_SHORT).show();
                                 }
@@ -287,20 +240,31 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    private void navigateAfterLogin() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        authViewModel.getUserSession(user.getUid())
+                .observe(this, session -> {
+                    if (session != null && "LINKED".equals(session.getStatus())) {
+                        SessionPrefs.saveSessionId(this, session.getSessionId());
+                        startActivity(new Intent(this, MainActivity.class));
+                    } else {
+                        SessionPrefs.clearSessionId(this);
+                        startActivity(new Intent(this, QrLinkActivity.class));
+                    }
+                    finish();
+                });
+    }
+
+
     @SuppressLint("ClickableViewAccessibility")
     private void setupPasswordToggle() {
-        binding.ivTogglePassword.setOnClickListener(v -> {
-            if (isPasswordVisible) {
-                binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                binding.ivTogglePassword.setImageResource(R.drawable.ic_eye_off);
-                isPasswordVisible = false;
-            } else {
-                binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                binding.ivTogglePassword.setImageResource(R.drawable.ic_eye_on);
-                isPasswordVisible = true;
-            }
-            binding.etPassword.setSelection(binding.etPassword.getText().length());
-        });
+        // Your existing password toggle logic
         binding.ivTogglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
                 binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);

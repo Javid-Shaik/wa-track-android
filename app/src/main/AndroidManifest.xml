@@ -58,7 +58,7 @@
         <activity
             android:name=".ui.QrLinkActivity"
             android:exported="false"
-            android:theme="@style/Theme.WaTrack" />
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".TrackedUsersActivity"

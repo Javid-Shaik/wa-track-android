@@ -1,6 +1,5 @@
 package com.example.watrack.repository;
 
-import com.example.watrack.model.LinkStatusResponse;
 import com.example.watrack.model.QrResponse;
 import com.example.watrack.model.RegisterRequest;
 import com.example.watrack.model.SessionResponse;
@@ -34,14 +33,11 @@ public interface ApiService {
 
     // Poll status
     @GET("/api/wa/status/{sessionId}")
-    Call<LinkStatusResponse> getStatus(@Path("sessionId") String sessionId);
+    Call<SessionResponse> getUserSession(@Path("sessionId") String sessionId);
 
     // Subscribe to a phoneNumber for presence (app-level)
     @POST("/api/wa/subscribe")
     Call<Map<String, Object>> subscribe(@Body Map<String, Object> body);
-
-    @GET("api/session/status")
-    Call<SessionResponse> getSessionStatus(@Query("sessionId") String sessionId);
 
     @POST("api/session/refresh")
     Call<SessionResponse> refreshQr(@Query("sessionId") String sessionId);

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.watrack.model.SessionResponse;
 import com.example.watrack.repository.ApiClient;
 import com.example.watrack.repository.ApiService;
 import com.example.watrack.model.RegisterRequest;
@@ -50,4 +51,25 @@ public class AuthViewModel extends ViewModel {
 
         return registerResponseLiveData;
     }
+
+    public LiveData<SessionResponse> getUserSession(String firebaseUid) {
+        MutableLiveData<SessionResponse> data = new MutableLiveData<>();
+        apiService.getUserSession(firebaseUid).enqueue(new Callback<SessionResponse>() {
+            @Override
+            public void onResponse(Call<SessionResponse> call, Response<SessionResponse> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                } else {
+                    data.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SessionResponse> call, Throwable t) {
+                data.setValue(null);
+            }
+        });
+        return data;
+    }
+
 }

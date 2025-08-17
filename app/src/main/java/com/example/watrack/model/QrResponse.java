@@ -1,13 +1,17 @@
 package com.example.watrack.model;
 
-public class QrResponse {
-    private String qr;          // some backends return 'qr' as dataUrl
-    private String qrImageUrl;  // optional
-    private String sessionId;
-    private long expiresAt;
+import com.google.gson.annotations.SerializedName;
 
-    public String getQr() { return qr; }
-    public String getQrImageUrl() { return qrImageUrl; }
-    public String getSessionId() { return sessionId; }
-    public long getExpiresAt() { return expiresAt; }
+public class QrResponse {
+
+    @SerializedName("qr")
+    private String qr;
+
+    public String getQr() {
+        return qr;
+    }
+
+    public void setQr(String qr) {
+        this.qr = qr;
+    }
 }

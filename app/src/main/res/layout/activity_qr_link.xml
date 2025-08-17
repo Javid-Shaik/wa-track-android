@@ -4,7 +4,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_qr_gradient">
+    android:background="@drawable/bg_login_gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Top Brand Area -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,7 +47,6 @@
                 android:layout_marginTop="6dp"/>
         </LinearLayout>
 
-        <!-- Card -->
         <LinearLayout
             android:id="@+id/qrCard"
             android:layout_width="match_parent"
@@ -71,6 +69,20 @@
                 android:contentDescription="@string/scan_qr" />
 
             <TextView
+                android:id="@+id/tvQrLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:padding="16dp"
+                android:textColor="@color/textLink"
+                android:autoLink="web"
+                android:linksClickable="true"
+                android:text="Link: not available"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
                 android:id="@+id/expireText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,12 +95,18 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Open WhatsApp → ⋮ (or Settings) → Linked devices → Link a device → Scan this QR."
+                android:text="Tap the link above to open it on another phone or browser to scan the QR code."
                 android:textColor="@color/textOnDark"
                 android:layout_marginTop="10dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Instructions:\n1. On another phone, open WhatsApp.\n2. Go to Linked devices -> Link a device.\n3. Scan the QR code from your browser."
+                android:textColor="@color/textMuted"
+                android:layout_marginTop="8dp" />
         </LinearLayout>
 
-        <!-- Loader -->
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/loader"
             android:layout_width="120dp"
@@ -99,7 +117,6 @@
             app:lottie_loop="true"
             android:visibility="gone"/>
 
-        <!-- Actions -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -132,7 +149,6 @@
                 android:background="@drawable/bg_button_outline"/>
         </LinearLayout>
 
-        <!-- Legal Links -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
