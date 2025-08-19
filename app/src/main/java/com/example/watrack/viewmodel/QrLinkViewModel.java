@@ -59,9 +59,41 @@ public class QrLinkViewModel extends AndroidViewModel {
         uiStatus.setValue("Fetching QR…");
 
         if (sessionId == null) {
-            createSession();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) {
+                loading.setValue(false);
+                uiStatus.setValue("User not authenticated");
+                return;
+            }
+            Map<String, String> body = new HashMap<>();
+            body.put("firebaseUid", user.getUid());
+
+            // ensure (reuse pending or create new)
+            api.ensureSession(body).enqueue(new Callback<SessionResponse>() {
+                @Override public void onResponse(Call<SessionResponse> call, Response<SessionResponse> res) {
+                    if (!res.isSuccessful() || res.body() == null) {
+                        loading.setValue(false);
+                        uiStatus.setValue("Failed to ensure session");
+                        return;
+                    }
+                    SessionResponse s = res.body();
+                    sessionId = s.getSessionId();
+                    SessionPrefs.saveSessionId(getApplication(), sessionId);
+
+                    if ("LINKED".equalsIgnoreCase(s.getStatus())) {
+                        onConnected();
+                    } else {
+                        startClient(); // will request QR next
+                    }
+                }
+                @Override public void onFailure(Call<SessionResponse> call, Throwable t) {
+                    loading.setValue(false);
+                    uiStatus.setValue("Error: " + t.getMessage());
+                }
+            });
         } else {
-            requestQr();
+            // Already have a sessionId (possibly from Splash/Login) → start client & fetch QR
+            startClient();
         }
     }
 
@@ -94,10 +126,10 @@ public class QrLinkViewModel extends AndroidViewModel {
     }
 
     private void startClient() {
+        Log.d("QrLinkViewModel", "Starting client with Session ID: " + sessionId);
         api.startClient(Collections.singletonMap("sessionId", sessionId))
                 .enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    @Override public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
                             requestQr();
                         } else {
@@ -105,9 +137,7 @@ public class QrLinkViewModel extends AndroidViewModel {
                             uiStatus.setValue("Failed to start client");
                         }
                     }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    @Override public void onFailure(Call<Void> call, Throwable t) {
                         loading.setValue(false);
                         uiStatus.setValue("Error: " + t.getMessage());
                     }
@@ -119,6 +149,9 @@ public class QrLinkViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<QrResponse> call, Response<QrResponse> response) {
                 loading.setValue(false);
+
+                // Log the HTTP status code and body
+                Log.d("QrLinkViewModel", "API Response Code: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
                     QrResponse data = response.body();
                     qrData.setValue(data);
@@ -128,9 +161,19 @@ public class QrLinkViewModel extends AndroidViewModel {
                         startExpireTimer(QR_VALIDITY_MS);
                         pollStatus();
                     } else {
+                        // This is your current log line, it's correct.
                         uiStatus.setValue("No QR available");
+                        Log.d("QrLinkViewModel", "QR is null in the response.");
+                        // Check if the session needs more time and re-request
+                        new Handler().postDelayed(QrLinkViewModel.this::requestQr, 2000); // Retry after 2 seconds
                     }
                 } else {
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
+                        Log.e("QrLinkViewModel", "Failed to fetch QR. Code: " + response.code() + ", Error: " + errorBody);
+                    } catch (Exception e) {
+                        Log.e("QrLinkViewModel", "Failed to fetch QR. Code: " + response.code());
+                    }
                     uiStatus.setValue("Failed to fetch QR");
                 }
             }

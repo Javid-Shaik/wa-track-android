@@ -70,12 +70,15 @@ public class SplashActivity extends AppCompatActivity {
         AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
         authViewModel.getUserSession(currentUser.getUid())
                 .observe(this, session -> {
-                    if (session != null && "LINKED".equals(session.getStatus())) {
-                        SessionPrefs.saveSessionId(this, session.getSessionId());
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    } else {
+                    if (session == null || "NONE".equals(session.getStatus())) {
                         SessionPrefs.clearSessionId(this);
-                        startActivity(new Intent(SplashActivity.this, QrLinkActivity.class));
+                        startActivity(new Intent(this, QrLinkActivity.class));
+                    } else if ("LINKED".equals(session.getStatus())) {
+                        SessionPrefs.saveSessionId(this, session.getSessionId());
+                        startActivity(new Intent(this, MainActivity.class));
+                    } else { // PENDING
+                        SessionPrefs.saveSessionId(this, session.getSessionId()); // <— keep pending!
+                        startActivity(new Intent(this, QrLinkActivity.class));
                     }
                     finish();
                 });

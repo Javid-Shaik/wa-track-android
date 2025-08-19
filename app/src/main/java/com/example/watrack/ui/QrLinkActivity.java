@@ -1,5 +1,8 @@
 package com.example.watrack.ui;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,11 +11,10 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-// Removed unused Glide import as we are no longer loading a dynamic image.
-// import com.bumptech.glide.Glide;
 import com.example.watrack.R;
 import com.example.watrack.databinding.ActivityQrLinkBinding;
 import com.example.watrack.viewmodel.QrLinkViewModel;
@@ -35,12 +37,13 @@ public class QrLinkActivity extends AppCompatActivity {
         setupUi();
         observeVm();
 
-        // ✅ FIX: Use the correct method name from the ViewModel
+        // Initial call to fetch the QR link
         viewModel.fetchQr();
 
-        // Optional: disable back while linking (UX choice)
+        // Disable the back button while the linking process is active
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override public void handleOnBackPressed() {
+            @Override
+            public void handleOnBackPressed() {
                 Toast.makeText(QrLinkActivity.this, "Please finish linking or tap Cancel.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -48,11 +51,21 @@ public class QrLinkActivity extends AppCompatActivity {
 
     private void setupUi() {
         // Buttons
-        // ✅ FIX: Use the correct method name from the ViewModel
         binding.btnRefresh.setOnClickListener(v -> viewModel.fetchQr());
         binding.btnCancel.setOnClickListener(v -> finish());
 
-        // Terms & Privacy
+        // Copy Link functionality
+        binding.tvQrLink.setOnClickListener(v -> {
+            String qrUrl = binding.tvQrLink.getText().toString();
+            if (!"Link: not available".equals(qrUrl)) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("QR Link", qrUrl);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(this, "Link copied to clipboard!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Terms & Privacy dialogs
         binding.tvTerms.setOnClickListener(v -> showInfoDialog(
                 "Terms & Conditions",
                 "By using WaTrack, you agree to:\n\n" +
@@ -79,7 +92,6 @@ public class QrLinkActivity extends AppCompatActivity {
 
         viewModel.getQrData().observe(this, qrResponse -> {
             if (qrResponse == null || qrResponse.getQr() == null) {
-                // Handle the case where QR data or the QR field is null
                 Log.d("QrLinkActivity", "QR data or QR link is null.");
                 return;
             }
@@ -87,9 +99,8 @@ public class QrLinkActivity extends AppCompatActivity {
             String qrUrl = qrResponse.getQr();
             Log.d("QrLinkActivity", "Received QR URL: " + qrUrl);
 
-            // ✅ FIX: Removed Glide and instead set the URL to the TextView
             binding.tvQrLink.setText(qrUrl);
-            binding.tvQrLink.setVisibility(View.VISIBLE); // Ensure the TextView is visible
+            binding.tvQrLink.setVisibility(View.VISIBLE);
         });
 
         viewModel.getUiStatus().observe(this, binding.statusText::setText);
@@ -105,7 +116,6 @@ public class QrLinkActivity extends AppCompatActivity {
 
         viewModel.getLinked().observe(this, ok -> {
             if (ok != null && ok) {
-                // 🎉 Navigate to Dashboard
                 Toast.makeText(this, "Linked successfully!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
@@ -114,7 +124,7 @@ public class QrLinkActivity extends AppCompatActivity {
     }
 
     private void showInfoDialog(String title, String message) {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Okay", (d, w) -> d.dismiss())

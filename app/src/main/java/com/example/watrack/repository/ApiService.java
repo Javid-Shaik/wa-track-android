@@ -4,42 +4,71 @@ import com.example.watrack.model.QrResponse;
 import com.example.watrack.model.RegisterRequest;
 import com.example.watrack.model.SessionResponse;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
-
-import java.util.Map;
 
 public interface ApiService {
-    @POST("/api/auth/register") Call<Void> registerUser(@Body RegisterRequest request);
-    // Create a new sessionId (backend generates one)
+
+    //  Auth
+    @POST("/api/auth/register")
+    Call<Void> registerUser(@Body RegisterRequest request);
+
+    //  Session management
     @POST("/api/wa/create-session")
     Call<SessionResponse> createSession(@Body Map<String, Object> body);
 
-    // Tell backend to start/resume client
+    @POST("/api/wa/ensure-session")
+    Call<SessionResponse> ensureSession(@Body Map<String, String> body);
+
+    @GET("/api/wa/session-by-user/{firebaseUid}")
+    Call<SessionResponse> getSessionByUser(@Path("firebaseUid") String firebaseUid);
+
     @POST("/api/wa/start-client")
     Call<Void> startClient(@Body Map<String, Object> body);
 
-    // Get QR data URL (base64 data:image/png... or object with data)
-    @GET("/api/wa/qr-code/{sessionId}")
-    Call<Map<String, Object>> getQr(@Path("sessionId") String sessionId);
+    @POST("/api/wa/end-session")
+    Call<Void> endSession(@Body Map<String, Object> body);
 
-    // Or, if backend returns a wrapper QrResponse:
+    //  QR
+    @GET("/api/wa/qr-code/{sessionId}")
+    Call<QrResponse> getQr(@Path("sessionId") String sessionId);
+
     @GET("/api/wa/qr-code/{sessionId}")
     Call<QrResponse> getQr2(@Path("sessionId") String sessionId);
 
-    // Poll status
+    //  Polling status
     @GET("/api/wa/status/{sessionId}")
     Call<SessionResponse> getUserSession(@Path("sessionId") String sessionId);
 
-    // Subscribe to a phoneNumber for presence (app-level)
+    //  Subscription
     @POST("/api/wa/subscribe")
     Call<Map<String, Object>> subscribe(@Body Map<String, Object> body);
 
-    @POST("api/session/refresh")
-    Call<SessionResponse> refreshQr(@Query("sessionId") String sessionId);
+    @POST("/api/wa/unsubscribe")
+    Call<Map<String, Object>> unsubscribe(@Body Map<String, Object> body);
 
+    //  Profile & contacts
+    @GET("/api/wa/profile-pic/{sessionId}/{phoneNumber}")
+    Call<Map<String, Object>> getProfilePic(
+            @Path("sessionId") String sessionId,
+            @Path("phoneNumber") String phoneNumber
+    );
+
+    @GET("/api/wa/in-contacts/{sessionId}/{phoneNumber}")
+    Call<Map<String, Object>> checkInContacts(
+            @Path("sessionId") String sessionId,
+            @Path("phoneNumber") String phoneNumber
+    );
+
+    //  Tracking
+    @GET("/api/wa/history/{trackingId}")
+    Call<Map<String, Object>> getHistory(@Path("trackingId") String trackingId);
+
+    @GET("/api/wa/last-seen/{trackingId}")
+    Call<Map<String, Object>> getLastSeen(@Path("trackingId") String trackingId);
 }

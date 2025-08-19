@@ -250,11 +250,14 @@ public class LoginActivity extends AppCompatActivity {
 
         authViewModel.getUserSession(user.getUid())
                 .observe(this, session -> {
-                    if (session != null && "LINKED".equals(session.getStatus())) {
+                    if (session == null || "NONE".equals(session.getStatus())) {
+                        SessionPrefs.clearSessionId(this);
+                        startActivity(new Intent(this, QrLinkActivity.class));
+                    } else if ("LINKED".equals(session.getStatus())) {
                         SessionPrefs.saveSessionId(this, session.getSessionId());
                         startActivity(new Intent(this, MainActivity.class));
-                    } else {
-                        SessionPrefs.clearSessionId(this);
+                    } else { // PENDING
+                        SessionPrefs.saveSessionId(this, session.getSessionId()); // <— keep pending!
                         startActivity(new Intent(this, QrLinkActivity.class));
                     }
                     finish();
