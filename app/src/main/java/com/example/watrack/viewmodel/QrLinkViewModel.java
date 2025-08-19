@@ -40,7 +40,7 @@ public class QrLinkViewModel extends AndroidViewModel {
     private CountDownTimer timer;
     private String sessionId;
 
-    private static final long QR_VALIDITY_MS = TimeUnit.MINUTES.toMillis(1); // ~60s
+    private static final long QR_VALIDITY_MS = TimeUnit.SECONDS.toMillis(30); // ~60s
 
     public QrLinkViewModel(@NonNull Application app) {
         super(app);

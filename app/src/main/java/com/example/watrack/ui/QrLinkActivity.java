@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.watrack.R;
 import com.example.watrack.databinding.ActivityQrLinkBinding;
+import com.example.watrack.util.LoaderDialog;
 import com.example.watrack.viewmodel.QrLinkViewModel;
 
 import java.util.concurrent.TimeUnit;
@@ -25,6 +26,8 @@ public class QrLinkActivity extends AppCompatActivity {
 
     private ActivityQrLinkBinding binding;
     private QrLinkViewModel viewModel;
+
+    private LoaderDialog loader;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +39,8 @@ public class QrLinkActivity extends AppCompatActivity {
 
         setupUi();
         observeVm();
+
+        loader = new LoaderDialog();
 
         // Initial call to fetch the QR link
         viewModel.fetchQr();

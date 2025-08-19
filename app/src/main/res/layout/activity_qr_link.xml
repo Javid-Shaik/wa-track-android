@@ -101,7 +101,7 @@
             android:background="@drawable/bg_link_highlight"
             android:gravity="center"
             android:padding="16dp"
-            android:textColor="@color/textLink"
+            android:textColor="#DCF5F8"
             android:text="Link: not available"
             android:textStyle="bold"
             android:textSize="14sp" />
@@ -143,6 +143,8 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_button_primary"
+                android:backgroundTint="@null"
+                android:backgroundTintMode="src_over"
                 android:text="Refresh QR"
                 android:textColor="@color/onPrimary" />
 
@@ -157,6 +159,8 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_button_outline"
+                android:backgroundTint="@null"
+                android:backgroundTintMode="src_over"
                 android:text="Cancel"
                 android:textColor="@color/textOnDark" />
         </LinearLayout>
@@ -183,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="16dp"
                 android:text="Terms"
-                android:textColor="@color/textLink"
+                android:textColor="@color/textOnDark"
                 android:textStyle="bold" />
 
             <TextView
@@ -191,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Privacy"
-                android:textColor="@color/textLink"
+                android:textColor="@color/textOnDark"
                 android:textStyle="bold" />
         </LinearLayout>
 
