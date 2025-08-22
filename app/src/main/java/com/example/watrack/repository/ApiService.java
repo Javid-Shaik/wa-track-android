@@ -1,5 +1,8 @@
 package com.example.watrack.repository;
 
+import com.example.watrack.model.ActivityLogResponse;
+import com.example.watrack.model.Contact;
+import com.example.watrack.model.ContactResponse;
 import com.example.watrack.model.QrResponse;
 import com.example.watrack.model.RegisterRequest;
 import com.example.watrack.model.SessionResponse;
@@ -11,6 +14,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
 
@@ -71,4 +75,15 @@ public interface ApiService {
 
     @GET("/api/wa/last-seen/{trackingId}")
     Call<Map<String, Object>> getLastSeen(@Path("trackingId") String trackingId);
+
+    @GET("/api/wa/contacts")
+    Call<ContactResponse> getContacts();
+
+    // Fetches the list of activity logs for a specific contact.
+    @GET("/api/wa/activity_logs")
+    Call<ActivityLogResponse> getActivityLogs(@Query("contactId") String contactId);
+
+    // Adds a new contact to the backend.
+    @POST("/api/wa/contacts")
+    Call<Void> addContact(@Body Contact contact);
 }

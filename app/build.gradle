@@ -39,7 +39,7 @@ android {
     buildFeatures {
 
         viewBinding true
-
+        dataBinding true
     }
 
 
@@ -59,67 +59,42 @@ android {
 
 
     compileOptions {
-
         sourceCompatibility JavaVersion.VERSION_11
-
         targetCompatibility JavaVersion.VERSION_11
 
     }
 
-
-
     dependenciesInfo {
-
         includeInApk true
-
     }
-
 }
-
-
 
 dependencies {
 
-// Android Libraries
-
+    // Android Libraries
     implementation 'androidx.appcompat:appcompat:1.4.2'
-
-    implementation 'com.google.android.material:material:1.6.1'
-
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
-
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.1'
-
     implementation 'androidx.lifecycle:lifecycle-livedata:2.4.1'
 
-
-
-// Firebase (Firestore & Notifications)
-
+    // Firebase (Firestore & Notifications)
     implementation platform('com.google.firebase:firebase-bom:33.9.0')
-
     implementation 'com.google.firebase:firebase-messaging:23.0.6'
-
     implementation 'com.google.firebase:firebase-firestore:24.0.2'
-
     implementation 'com.google.firebase:firebase-analytics'
-
     implementation 'com.google.firebase:firebase-auth'
-
     implementation 'com.google.firebase:firebase-appcheck-playintegrity:18.0.0'
 
     implementation "androidx.credentials:credentials:1.2.2"
     implementation "androidx.credentials:credentials-play-services-auth:1.2.2"
 
-// App Check debug provider
-
+    // App Check debug provider
     implementation 'com.google.firebase:firebase-appcheck-debug:17.0.1'
 
     // QR Code Generation
     implementation 'com.google.zxing:core:3.4.1'
 
     // Room Database
-
     implementation 'androidx.room:room-runtime:2.4.3'
     implementation libs.constraintlayout
 
@@ -153,4 +128,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation 'com.airbnb.android:lottie:5.2.0'
 
+    implementation 'com.google.android.material:material:1.10.0'
 }

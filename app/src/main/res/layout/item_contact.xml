@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <!-- Contact Avatar -->
+    <ImageView
+        android:id="@+id/contact_avatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/contact_avatar"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_person_circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/circle_background"
+        android:padding="4dp" />
+
+    <!-- Contact Name -->
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Contact Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintStart_toEndOf="@id/contact_avatar"
+        app:layout_constraintTop_toTopOf="@id/contact_avatar"
+        app:layout_constraintEnd_toStartOf="@id/contact_more"
+        android:layout_marginStart="12dp" />
+
+    <!-- Last Seen -->
+    <TextView
+        android:id="@+id/contact_last_seen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Last seen 10:32 AM"
+        android:textSize="13sp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintStart_toStartOf="@id/contact_name"
+        app:layout_constraintTop_toBottomOf="@id/contact_name"
+        app:layout_constraintEnd_toStartOf="@id/contact_more" />
+
+    <!-- Duration (optional) -->
+    <TextView
+        android:id="@+id/contact_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5 min"
+        android:textSize="12sp"
+        android:textColor="?android:attr/textColorSecondary"
+        app:layout_constraintTop_toBottomOf="@id/contact_last_seen"
+        app:layout_constraintStart_toStartOf="@id/contact_last_seen" />
+
+    <!-- "More" Button -->
+    <ImageButton
+        android:id="@+id/contact_more"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/more_options"
+        android:src="@drawable/ic_more_vert"
+        app:tint="?attr/colorOnSurface"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

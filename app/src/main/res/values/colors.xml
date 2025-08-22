@@ -7,18 +7,119 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#6200EE</color> <!-- Purple Color -->
-    <color name="colorPrimaryDark">#3700B3</color> <!-- Dark Purple -->
-    <color name="colorAccent">#03DAC5</color>
     <color name="primary">#6750A4</color>
     <color name="onPrimary">#FFFFFF</color>
     <color name="bgDark">#111217</color>
-    <color name="textOnDark">#FFFFFF</color>
-    <color name="textMuted">#B9C0D4</color>
     <color name="textLink">#4F66E6</color>
     <color name="ic_launcher_background">#145E6D</color>
     <color name="textHint">#77FFFFFF</color>
     <color name="gray">#888888</color>
     <color name="logoColor">#2196F3</color>
     <color name="lightBlue">#3BA8E0</color>
+
+    <color name="offlineRed">#D32F2F</color>
+    <!-- The line for chip_selector has been removed -->
+
+    <color name="colorPrimaryDark">#2B7CAE</color>
+    <color name="backgroundColor">#F8F9FA</color>
+    <color name="onlineGreenDark">#388E3C</color>
+    <color name="textSecondary">#757575</color>
+    <color name="navActive">#1A3C34</color>
+    <color name="navInactive">#757575</color>
+
+    <!-- The line for nav_item_colors has been removed -->
+
+    <!-- Chip selector colors (these are fine as individual colors) -->
+    <color name="chip_selected_color">#E1F5FE</color> <!-- Used by your chip text selector -->
+    <color name="chip_text_selected_color">#3BA8E0</color>
+
+    <color name="md_theme_light_primary">#705D8F</color>
+    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="md_theme_light_primaryContainer">#EADDFF</color>
+    <color name="md_theme_light_onPrimaryContainer">#281948</color>
+    <color name="md_theme_light_secondary">#655B70</color>
+    <color name="md_theme_light_onSecondary">#FFFFFF</color>
+    <color name="md_theme_light_secondaryContainer">#EBDDF5</color>
+    <color name="md_theme_light_onSecondaryContainer">#20192A</color>
+    <color name="md_theme_light_tertiary">#805158</color>
+    <color name="md_theme_light_onTertiary">#FFFFFF</color>
+    <color name="md_theme_light_tertiaryContainer">#FFD9DE</color>
+    <color name="md_theme_light_onTertiaryContainer">#321017</color>
+    <color name="md_theme_light_error">#BA1A1A</color>
+    <color name="md_theme_light_onError">#FFFFFF</color>
+    <color name="md_theme_light_errorContainer">#FFDAD6</color>
+    <color name="md_theme_light_onErrorContainer">#410002</color>
+    <color name="md_theme_light_background">#FFFBFF</color>
+    <color name="md_theme_light_onBackground">#1D1B20</color>
+    <color name="md_theme_light_surface">#FFFBFF</color>
+    <color name="md_theme_light_onSurface">#1D1B20</color>
+    <color name="md_theme_light_surfaceVariant">#E7E0EB</color>
+    <color name="md_theme_light_onSurfaceVariant">#49454E</color>
+    <color name="md_theme_light_outline">#7A757F</color>
+    <color name="md_theme_light_outlineVariant">#CAC4CF</color>
+    <color name="md_theme_light_inverseOnSurface">#F5EFF4</color>
+    <color name="md_theme_light_inverseSurface">#323035</color>
+    <color name="md_theme_light_inversePrimary">#D0BCFF</color>
+    <color name="md_theme_light_surfaceTint">#705D8F</color>
+    <color name="md_theme_light_surfaceContainer">#ECE6F0</color>
+    <color name="md_theme_light_surfaceContainerHigh">#E6E0EB</color>
+    <color name="md_theme_light_surfaceContainerHighest">#E0DBE5</color>
+    <color name="md_theme_light_surfaceContainerLow">#F2EDF7</color>
+    <color name="md_theme_light_surfaceContainerLowest">#FFFFFF</color>
+    <color name="md_theme_light_surfaceDim">#DED8E2</color>
+    <color name="md_theme_light_surfaceBright">#FFFBFF</color>
+
+    <color name="md_theme_dark_primary">#D0BCFF</color>
+    <color name="md_theme_dark_onPrimary">#402B61</color>
+    <color name="md_theme_dark_primaryContainer">#574478</color>
+    <color name="md_theme_dark_onPrimaryContainer">#EADDFF</color>
+    <color name="md_theme_dark_secondary">#CFC2DA</color>
+    <color name="md_theme_dark_onSecondary">#362E40</color>
+    <color name="md_theme_dark_secondaryContainer">#4C4458</color>
+    <color name="md_theme_dark_onSecondaryContainer">#EBDDF5</color>
+    <color name="md_theme_dark_tertiary">#F1B7BF</color>
+    <color name="md_theme_dark_onTertiary">#4B242C</color>
+    <color name="md_theme_dark_tertiaryContainer">#653A42</color>
+    <color name="md_theme_dark_onTertiaryContainer">#FFD9DE</color>
+    <color name="md_theme_dark_error">#FFB4AB</color>
+    <color name="md_theme_dark_onError">#690005</color>
+    <color name="md_theme_dark_errorContainer">#93000A</color>
+    <color name="md_theme_dark_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_dark_background">#1D1B20</color>
+    <color name="md_theme_dark_onBackground">#E6E0E5</color>
+    <color name="md_theme_dark_surface">#1D1B20</color>
+    <color name="md_theme_dark_onSurface">#E6E0E5</color>
+    <color name="md_theme_dark_surfaceVariant">#49454E</color>
+    <color name="md_theme_dark_onSurfaceVariant">#CAC4CF</color>
+    <color name="md_theme_dark_outline">#948F99</color>
+    <color name="md_theme_dark_outlineVariant">#49454E</color>
+    <color name="md_theme_dark_inverseOnSurface">#1D1B20</color>
+    <color name="md_theme_dark_inverseSurface">#E6E0E5</color>
+    <color name="md_theme_dark_inversePrimary">#705D8F</color>
+    <color name="md_theme_dark_surfaceTint">#D0BCFF</color>
+    <color name="md_theme_dark_surfaceContainer">#252328</color>
+    <color name="md_theme_dark_surfaceContainerHigh">#2F2D33</color>
+    <color name="md_theme_dark_surfaceContainerHighest">#3A383E</color>
+    <color name="md_theme_dark_surfaceContainerLow">#2D2B30</color>
+    <color name="md_theme_dark_surfaceContainerLowest">#121318</color>
+    <color name="md_theme_dark_surfaceDim">#1D1B20</color>
+    <color name="md_theme_dark_surfaceBright">#444147</color>
+
+    <color name="colorPrimary">#075E54</color> <!-- WhatsApp Dark Green -->
+    <color name="colorAccent">#25D366</color> <!-- WhatsApp Light Green -->
+
+    <color name="darkGreen">#1A3C34</color>
+    <color name="darkBackground">#121212</color>
+    <color name="cardBackground">#1E1E1E</color>
+
+    <!-- WhatsApp Dark Theme Colors -->
+    <color name="whatsappGreen">#075E54</color>
+    <color name="whatsappDark">#121B22</color>
+    <color name="whatsappBackground">#1F2C34</color>
+    <color name="whatsappCardBackground">#2A3942</color>
+
+    <!-- Text and Status -->
+    <color name="textOnDark">#E9EDEF</color>
+    <color name="textMuted">#8696A0</color>
+    <color name="onlineGreen">#25D366</color>
 </resources>
