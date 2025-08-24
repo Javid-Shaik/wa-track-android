@@ -39,8 +39,8 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Linked user card -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLinkedUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
@@ -55,6 +55,7 @@
                     android:padding="16dp">
 
                     <ImageView
+                        android:id="@+id/imgLinkedUser"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/ic_person_circle"
@@ -68,6 +69,7 @@
                         android:layout_marginStart="12dp">
 
                         <TextView
+                            android:id="@+id/tvLinkedUserName"
                             android:text="John Doe"
                             android:textStyle="bold"
                             android:textSize="18sp"
@@ -88,6 +90,7 @@
                                 android:background="@drawable/bg_status_dot"/>
 
                             <TextView
+                                android:id="@+id/tvLinkedUserStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
@@ -97,6 +100,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvLinkedUserLastSeen"
                             android:text="Last seen today at 1:45 AM"
                             android:textSize="12sp"
                             android:textColor="@color/textMuted"

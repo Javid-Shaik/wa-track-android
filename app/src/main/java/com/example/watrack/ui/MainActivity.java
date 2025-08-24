@@ -8,9 +8,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.watrack.R;
 import com.example.watrack.adapter.ActivityAdapter;
 import com.example.watrack.adapter.ContactAdapter;
@@ -21,6 +23,8 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputEditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hbb20.CountryCodePicker;
 
 import java.util.Objects;
@@ -50,6 +54,44 @@ public class MainActivity extends AppCompatActivity {
         });
 
         vm = new ViewModelProvider(this).get(DashboardViewModel.class);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            vm.loadLinkedUser(user.getUid());
+        }
+        vm.getLinkedUser().observe(this, session -> {
+            if (session != null) {
+                b.tvLinkedUserName.setText(session.getUserName());
+
+                // Profile Pic
+                if (session.getProfilePicUrl() != null) {
+                    Glide.with(this)
+                            .load(session.getProfilePicUrl())
+                            .placeholder(R.drawable.ic_person_circle)
+                            .into(b.imgLinkedUser);
+                } else {
+                    b.imgLinkedUser.setImageResource(R.drawable.ic_person_circle);
+                }
+
+                // Online/Offline
+                if (session.isOnline()) {
+                    b.userDot.setBackgroundResource(R.drawable.bg_online_dot);
+                    b.tvLinkedUserStatus.setText("Online");
+                    b.tvLinkedUserStatus.setTextColor(ContextCompat.getColor(this, R.color.onlineGreen));
+                } else {
+                    b.userDot.setBackgroundResource(R.drawable.bg_offline_dot);
+                    b.tvLinkedUserStatus.setText("Offline");
+                    b.tvLinkedUserStatus.setTextColor(ContextCompat.getColor(this, R.color.textMuted));
+                }
+
+                // Last Seen
+                b.tvLinkedUserLastSeen.setText("Last seen " + session.getLastSeen());
+            } else {
+                b.tvLinkedUserName.setText("No linked user");
+                b.tvLinkedUserStatus.setText("");
+                b.tvLinkedUserLastSeen.setText("");
+            }
+        });
+
 
         // Contacts
         contactAdapter = new ContactAdapter(new ContactAdapter.Listener() {
@@ -133,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 // Add the new contact with the entered phone number
                 vm.addContact(new Contact(
                         fullPhoneNumber,
-                        R.drawable.ic_person_circle,
+                        "",
                         "Last seen just now",
                         true,
                         "0 min"

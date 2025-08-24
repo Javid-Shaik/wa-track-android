@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.watrack.R;
 import com.example.watrack.databinding.ActivityLoginBinding;
+import com.example.watrack.model.SessionResponse;
 import com.example.watrack.util.LoaderDialog;
 import com.example.watrack.util.SessionPrefs;
 import com.example.watrack.viewmodel.AuthViewModel;
@@ -36,6 +37,10 @@ import androidx.credentials.exceptions.GetCredentialException;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginActivity";
+    // Default TTL applied when server does not provide ttlSeconds
+    private static final long DEFAULT_SESSION_TTL_SECONDS = 300; // 5 minutes
 
     private ActivityLoginBinding binding;
     private FirebaseAuth mAuth;
@@ -88,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            loader.show(getSupportFragmentManager(), "loader");
+            showLoader();
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
@@ -97,11 +102,22 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                Log.e("Firebase user --> {}", user.getUid());
-                                user.getIdToken(true).addOnSuccessListener(result -> {
-                                    String idToken = result.getToken();
-                                    registerWithBackend(idToken);
-                                });
+                                Log.d(TAG, "Firebase user: " + user.getUid());
+                                user.getIdToken(true)
+                                        .addOnSuccessListener(result -> {
+                                            String idToken = result.getToken();
+                                            if (!TextUtils.isEmpty(idToken)) {
+                                                registerWithBackend(idToken);
+                                            } else {
+                                                Toast.makeText(this, "Failed to get ID token", Toast.LENGTH_LONG).show();
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(this, "Token error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                            Log.e(TAG, "getIdToken failed", e);
+                                        });
+                            } else {
+                                Toast.makeText(this, "No Firebase user found after sign-in", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             String errorMessage = task.getException() != null ?
@@ -110,16 +126,14 @@ public class LoginActivity extends AppCompatActivity {
                                 errorMessage = "Invalid email or password";
                             }
                             Toast.makeText(this, "Login failed: " + errorMessage, Toast.LENGTH_LONG).show();
-                            Log.e("LoginActivity", "Email login error", task.getException());
+                            Log.e(TAG, "Email login error", task.getException());
                         }
                     });
         });
     }
 
     private void setupGoogleAuth() {
-        binding.btnGoogleSignIn.setOnClickListener(v -> {
-            beginGoogleSignIn();
-        });
+        binding.btnGoogleSignIn.setOnClickListener(v -> beginGoogleSignIn());
     }
 
     private void beginGoogleSignIn() {
@@ -146,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(GetCredentialException e) {
-                        Log.w("GoogleSignIn", "Google sign in failed", e);
+                        Log.w(TAG, "Google sign in failed", e);
                         if (e instanceof androidx.credentials.exceptions.NoCredentialException) {
                             Toast.makeText(LoginActivity.this,
                                     "No Google accounts found or sign-in cancelled.",
@@ -167,15 +181,19 @@ public class LoginActivity extends AppCompatActivity {
             GoogleIdTokenCredential googleIdTokenCredential =
                     GoogleIdTokenCredential.createFrom(credential.getData());
             String idToken = googleIdTokenCredential.getIdToken();
+            if (TextUtils.isEmpty(idToken)) {
+                Toast.makeText(this, "Empty Google ID token", Toast.LENGTH_SHORT).show();
+                return;
+            }
             firebaseAuthWithGoogle(idToken);
         } catch (Exception e) {
             Toast.makeText(this, "Failed to parse Google credentials", Toast.LENGTH_SHORT).show();
-            Log.e("GoogleSignIn", "Credential parsing failed", e);
+            Log.e(TAG, "Credential parsing failed", e);
         }
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
-        loader.show(getSupportFragmentManager(), "loader");
+        showLoader();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -185,13 +203,25 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            user.getIdToken(true).addOnSuccessListener(result -> {
-                                String token = result.getToken();
-                                registerWithBackend(token);
-                            });
+                            user.getIdToken(true)
+                                    .addOnSuccessListener(result -> {
+                                        String token = result.getToken();
+                                        if (!TextUtils.isEmpty(token)) {
+                                            registerWithBackend(token);
+                                        } else {
+                                            Toast.makeText(this, "Failed to get ID token", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(this, "Token error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Log.e(TAG, "getIdToken failed", e);
+                                    });
+                        } else {
+                            Toast.makeText(this, "No Firebase user after Google auth", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(this, "Google authentication failed", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "signInWithCredential failed", task.getException());
                     }
                 });
     }
@@ -205,10 +235,10 @@ public class LoginActivity extends AppCompatActivity {
             }
             mAuth.sendPasswordResetEmail(email)
                     .addOnCompleteListener(task -> {
-                        Toast.makeText(this,
-                                task.isSuccessful() ? "Reset email sent" : "Error: " +
-                                        task.getException().getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        String msg = task.isSuccessful()
+                                ? "Reset email sent"
+                                : "Error: " + (task.getException() != null ? task.getException().getMessage() : "Unknown");
+                        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                     });
         });
     }
@@ -220,26 +250,41 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void registerWithBackend(String firebaseIdToken) {
+        showLoader();
         FirebaseMessaging.getInstance().getToken()
                 .addOnSuccessListener(deviceToken -> {
                     authViewModel.registerUser(firebaseIdToken, deviceToken)
                             .observe(this, response -> {
-                                Log.e("LoginActivity", "Response code: " + response.code());
-                                if (response != null && response.code() != 404) {
+                                safeDismissLoader();
+
+                                if (response == null) {
+                                    Toast.makeText(this, "Backend registration failed (no response)", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "registerUser: null response");
+                                    return;
+                                }
+
+                                try {
+                                    Log.d(TAG, "Backend register response code: " + response.code());
+                                } catch (Exception ignored) { }
+
+                                if (response.code() >= 200 && response.code() < 300) {
                                     Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
-                                    // Navigate after successful backend registration
+                                    // Proceed to session-aware navigation
                                     navigateAfterLogin();
                                 } else {
                                     Toast.makeText(this, "Backend registration failed", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "registerUser failed code=" + response.code());
                                 }
                             });
                 })
                 .addOnFailureListener(e -> {
+                    safeDismissLoader();
                     Toast.makeText(this, "Failed to get FCM token: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.e("LoginActivity", "FCM token error", e);
+                    Log.e(TAG, "FCM token error", e);
                 });
     }
 
+    // After successful Firebase + backend registration, decide where to go based on session.
     private void navigateAfterLogin() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -248,26 +293,51 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        showLoader();
         authViewModel.getUserSession(user.getUid())
                 .observe(this, session -> {
-                    if (session == null || "NONE".equals(session.getStatus())) {
+                    safeDismissLoader();
+
+                    if (session == null) {
+                        // No session known → clear local and go link
                         SessionPrefs.clearSessionId(this);
                         startActivity(new Intent(this, QrLinkActivity.class));
-                    } else if ("LINKED".equals(session.getStatus())) {
-                        SessionPrefs.saveSessionId(this, session.getSessionId());
+                        finish();
+                        return;
+                    }
+
+                    String status = session.getStatus();
+                    String sessionId = session.getSessionId();
+
+                    if (TextUtils.isEmpty(status) || TextUtils.isEmpty(sessionId)) {
+                        SessionPrefs.clearSessionId(this);
+                        startActivity(new Intent(this, QrLinkActivity.class));
+                        finish();
+                        return;
+                    }
+
+                    long ttlSeconds = session.getTtlSeconds() > 0
+                            ? session.getTtlSeconds()
+                            : DEFAULT_SESSION_TTL_SECONDS;
+
+                    // Persist encrypted local cache so SplashActivity can skip network next time
+                    SessionPrefs.saveSession(this, sessionId, status, ttlSeconds);
+
+                    if (SessionResponse.STATUS_CONNECTED.equalsIgnoreCase(status)) {
                         startActivity(new Intent(this, MainActivity.class));
-                    } else { // PENDING
-                        SessionPrefs.saveSessionId(this, session.getSessionId()); // <— keep pending!
+                    } else if (SessionResponse.STATUS_PENDING.equalsIgnoreCase(status)) {
+                        startActivity(new Intent(this, QrLinkActivity.class));
+                    } else {
+                        // Unknown status → treat as not linked
+                        SessionPrefs.clearSessionId(this);
                         startActivity(new Intent(this, QrLinkActivity.class));
                     }
                     finish();
                 });
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     private void setupPasswordToggle() {
-        // Your existing password toggle logic
         binding.ivTogglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
                 binding.etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -282,12 +352,26 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void showLoader() {
+        if (loader != null && !loader.isAdded() && !isFinishing() && !isDestroyed()) {
+            try {
+                loader.show(getSupportFragmentManager(), "loader");
+            } catch (IllegalStateException e) {
+                Log.w(TAG, "showLoader after state saved", e);
+            }
+        }
+    }
+
     private void safeDismissLoader() {
         if (loader != null && loader.isAdded()) {
             if (!getSupportFragmentManager().isStateSaved()) {
-                loader.dismiss();
+                try {
+                    loader.dismiss();
+                } catch (Exception e) {
+                    Log.w(TAG, "safeDismissLoader failed", e);
+                }
             } else {
-                Log.w("LoginActivity", "Attempted to dismiss loader after onSaveInstanceState.");
+                Log.w(TAG, "Attempted to dismiss loader after onSaveInstanceState.");
             }
         }
     }

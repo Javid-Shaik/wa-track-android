@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.watrack.R;
 import com.example.watrack.model.Contact;
 
@@ -42,7 +43,8 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.VH> {
                             && oldItem.isOnline() == newItem.isOnline()
                             && oldItem.getLastSeen().equals(newItem.getLastSeen())
                             && oldItem.getDuration().equals(newItem.getDuration())
-                            && oldItem.getAvatarResId() == newItem.getAvatarResId();
+                            && ((oldItem.getProfilePicUrl() == null && newItem.getProfilePicUrl() == null)
+                            || (oldItem.getProfilePicUrl() != null && oldItem.getProfilePicUrl().equals(newItem.getProfilePicUrl())));
                 }
             };
 
@@ -78,7 +80,14 @@ public class ContactAdapter extends ListAdapter<Contact, ContactAdapter.VH> {
             name.setText(c.getName());
             lastSeen.setText(c.getLastSeen());
             duration.setText(c.getDuration());
-            avatar.setImageResource(c.getAvatarResId());
+
+            // Load avatar with Glide
+            Glide.with(itemView.getContext())
+                    .load(c.getProfilePicUrl())
+                    .placeholder(R.drawable.ic_person_circle) // shown while loading
+                    .error(R.drawable.ic_person_circle)       // shown if failed
+                    .circleCrop()
+                    .into(avatar);
 
             itemView.setOnClickListener(v -> listener.onClick(c));
             btnMore.setOnClickListener(v -> listener.onMore(btnMore, c));

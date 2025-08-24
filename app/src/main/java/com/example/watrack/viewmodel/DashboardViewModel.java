@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.watrack.data.TrackerRepository;
 import com.example.watrack.model.ActivityLog;
 import com.example.watrack.model.Contact;
+import com.example.watrack.model.SessionResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,4 +45,13 @@ public class DashboardViewModel extends ViewModel {
     }
 
     public void addContact(Contact contact) { repo.addContact(contact); }
+
+    public LiveData<SessionResponse> getLinkedUser() {
+        return repo.getLinkedUser();
+    }
+
+    public void loadLinkedUser(String firebaseUid) {
+        repo.fetchLinkedUser(firebaseUid);
+    }
+
 }

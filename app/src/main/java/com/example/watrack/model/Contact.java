@@ -1,15 +1,14 @@
 package com.example.watrack.model;
-
 public class Contact {
     private String name;
-    private int avatarResId;
+    private String profilePicUrl; // <-- changed from int to String
     private String lastSeen;
     private boolean isOnline;
     private String duration;
 
-    public Contact(String name, int avatarResId, String lastSeen, boolean isOnline, String duration) {
+    public Contact(String name, String profilePicUrl, String lastSeen, boolean isOnline, String duration) {
         this.name = name;
-        this.avatarResId = avatarResId;
+        this.profilePicUrl = profilePicUrl;
         this.lastSeen = lastSeen;
         this.isOnline = isOnline;
         this.duration = duration;
@@ -19,8 +18,8 @@ public class Contact {
         return name;
     }
 
-    public int getAvatarResId() {
-        return avatarResId;
+    public String getProfilePicUrl() {
+        return profilePicUrl;
     }
 
     public String getLastSeen() {
@@ -33,13 +32,5 @@ public class Contact {
 
     public String getDuration() {
         return duration;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Contact contact = (Contact) o;
-        return name.equals(contact.name);
     }
 }

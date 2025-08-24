@@ -54,7 +54,7 @@ public class AuthViewModel extends ViewModel {
 
     public LiveData<SessionResponse> getUserSession(String firebaseUid) {
         MutableLiveData<SessionResponse> data = new MutableLiveData<>();
-        apiService.getUserSession(firebaseUid).enqueue(new Callback<SessionResponse>() {
+        apiService.getSessionByUser(firebaseUid).enqueue(new Callback<SessionResponse>() {
             @Override
             public void onResponse(Call<SessionResponse> call, Response<SessionResponse> response) {
                 if (response.isSuccessful()) {

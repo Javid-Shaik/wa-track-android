@@ -76,8 +76,8 @@ public interface ApiService {
     @GET("/api/wa/last-seen/{trackingId}")
     Call<Map<String, Object>> getLastSeen(@Path("trackingId") String trackingId);
 
-    @GET("/api/wa/contacts")
-    Call<ContactResponse> getContacts();
+    @GET("/api/tracked/contacts/{firebaseUid}")
+    Call<ContactResponse> getContacts(@Path("firebaseUid") String firebaseUid);
 
     // Fetches the list of activity logs for a specific contact.
     @GET("/api/wa/activity_logs")
